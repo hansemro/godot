@@ -735,9 +735,11 @@ bool OS_X11::refresh_device_info() {
 		}
 
 		xi.pressure = 0;
+		xi.pen_inverted = false;
 		xi.pen_pressure_range[dev->deviceid] = Vector2(pressure_min, pressure_max);
 		xi.pen_tilt_x_range[dev->deviceid] = Vector2(tilt_x_min, tilt_x_max);
 		xi.pen_tilt_y_range[dev->deviceid] = Vector2(tilt_y_min, tilt_y_max);
+		xi.pen_inverted_devices[dev->deviceid] = (bool)strstr(dev->name, "eraser");
 	}
 
 	XIFreeDeviceInfo(info);
@@ -2485,6 +2487,7 @@ void OS_X11::process_xevents() {
 	xi.pressure = 0;
 	xi.tilt = Vector2();
 	xi.pressure_supported = false;
+	xi.pen_inverted = false;
 
 	LocalVector<XEvent> events;
 	{
@@ -2578,6 +2581,8 @@ void OS_X11::process_xevents() {
 
 							values++;
 						}
+
+						xi.pen_inverted = xi.pen_inverted_devices.find(device_id)->value();
 
 						// https://bugs.freedesktop.org/show_bug.cgi?id=71609
 						// http://lists.libsdl.org/pipermail/commits-libsdl.org/2015-June/000282.html
@@ -2922,6 +2927,7 @@ void OS_X11::process_xevents() {
 				} else {
 					mm->set_pressure((get_mouse_button_state() & (1 << (BUTTON_LEFT - 1))) ? 1.0f : 0.0f);
 				}
+				mm->set_pen_inverted(xi.pen_inverted);
 				mm->set_tilt(xi.tilt);
 
 				// Make the absolute position integral so it doesn't look _too_ weird :)
