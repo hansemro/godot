@@ -412,6 +412,8 @@ LRESULT OS_Windows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 				mm->set_pressure((raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN) ? 1.0f : 0.0f);
 
+				mm->set_pen_inverted(false);
+
 				mm->set_button_mask(last_button_state);
 
 				Point2i c(video_mode.width / 2, video_mode.height / 2);
@@ -630,6 +632,8 @@ LRESULT OS_Windows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 			Ref<InputEventMouseMotion> mm;
 			mm.instance();
+
+			mm->set_pen_inverted(pen_info.penFlags & (PEN_FLAG_INVERTED|PEN_FLAG_ERASER));
 
 			if (pen_info.penMask & PEN_MASK_PRESSURE) {
 				mm->set_pressure((float)pen_info.pressure / 1024);

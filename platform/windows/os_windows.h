@@ -147,6 +147,14 @@ typedef UINT32 POINTER_FLAGS;
 typedef UINT32 PEN_FLAGS;
 typedef UINT32 PEN_MASK;
 
+#ifndef PEN_FLAG_INVERTED
+#define PEN_FLAG_INVERTED 0x00000002
+#endif
+
+#ifndef PEN_FLAG_ERASER
+#define PEN_FLAG_ERASER 0x00000004
+#endif
+
 #ifndef PEN_MASK_PRESSURE
 #define PEN_MASK_PRESSURE 0x00000001
 #endif
@@ -272,6 +280,7 @@ class OS_Windows : public OS {
 	int min_pressure;
 	int max_pressure;
 	bool tilt_supported;
+	bool pen_inverted = false;
 	bool block_mm = false;
 
 	int last_pressure_update;
