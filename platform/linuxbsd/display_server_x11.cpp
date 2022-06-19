@@ -205,7 +205,7 @@ bool DisplayServerX11::_refresh_device_info() {
 		if (!dev->enabled) {
 			continue;
 		}
-		if (!(dev->use == XIMasterPointer || dev->use == XIFloatingSlave)) {
+		if (!(dev->use == XISlavePointer || dev->use == XIFloatingSlave)) {
 			continue;
 		}
 
@@ -3438,7 +3438,7 @@ void DisplayServerX11::process_events() {
 					} break;
 					case XI_RawMotion: {
 						XIRawEvent *raw_event = (XIRawEvent *)event_data;
-						int device_id = raw_event->deviceid;
+						int device_id = raw_event->sourceid;
 
 						// Determine the axis used (called valuators in XInput for some forsaken reason)
 						//  Mask is a bitmask indicating which axes are involved.
