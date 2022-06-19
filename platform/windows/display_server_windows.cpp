@@ -2415,6 +2415,8 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 				mm->set_pressure((raw->data.mouse.ulButtons & RI_MOUSE_LEFT_BUTTON_DOWN) ? 1.0f : 0.0f);
 
+				mm->set_pen_inverted(false);
+
 				mm->set_button_mask(last_button_state);
 
 				Point2i c(windows[window_id].width / 2, windows[window_id].height / 2);
@@ -2640,6 +2642,7 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			if ((pen_info.penMask & PEN_MASK_TILT_X) && (pen_info.penMask & PEN_MASK_TILT_Y)) {
 				mm->set_tilt(Vector2((float)pen_info.tiltX / 90, (float)pen_info.tiltY / 90));
 			}
+			mm->set_pen_inverted(pen_info.penFlags & (PEN_FLAG_INVERTED|PEN_FLAG_ERASER));
 
 			mm->set_ctrl_pressed(GetKeyState(VK_CONTROL) < 0);
 			mm->set_shift_pressed(GetKeyState(VK_SHIFT) < 0);
