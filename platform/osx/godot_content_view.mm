@@ -377,6 +377,7 @@
 	ds->update_mouse_pos(wd, mpos);
 	mm->set_position(wd.mouse_pos);
 	mm->set_pressure([event pressure]);
+	mm->set_pen_inverted([event pointingDeviceType] == NSPointingDeviceTypeEraser);
 	if ([event subtype] == NSEventSubtypeTabletPoint) {
 		const NSPoint p = [event tilt];
 		mm->set_tilt(Vector2(p.x, p.y));
