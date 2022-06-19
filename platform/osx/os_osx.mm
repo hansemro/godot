@@ -809,6 +809,7 @@ static void _mouseDownEvent(NSEvent *event, int index, int mask, bool pressed) {
 	const Vector2 pos = get_mouse_pos(mpos);
 	mm->set_position(pos);
 	mm->set_pressure([event pressure]);
+	mm->set_pen_inverted([event pointingDeviceType] == NSPointingDeviceTypeEraser);
 	if ([event subtype] == NSEventSubtypeTabletPoint) {
 		const NSPoint p = [event tilt];
 		mm->set_tilt(Vector2(p.x, p.y));
