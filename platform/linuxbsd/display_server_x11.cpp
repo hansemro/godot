@@ -196,6 +196,7 @@ bool DisplayServerX11::_refresh_device_info() {
 
 	xi.absolute_devices.clear();
 	xi.touch_devices.clear();
+	xi.pen_inverted_devices.clear();
 
 	int dev_count;
 	XIDeviceInfo *info = XIQueryDevice(x11_display, XIAllDevices, &dev_count);
@@ -274,6 +275,7 @@ bool DisplayServerX11::_refresh_device_info() {
 		xi.pen_pressure_range[dev->deviceid] = Vector2(pressure_min, pressure_max);
 		xi.pen_tilt_x_range[dev->deviceid] = Vector2(tilt_x_min, tilt_x_max);
 		xi.pen_tilt_y_range[dev->deviceid] = Vector2(tilt_y_min, tilt_y_max);
+		xi.pen_inverted_devices[dev->deviceid] = (bool)strstr(dev->name, "eraser");
 	}
 
 	XIFreeDeviceInfo(info);
@@ -3396,6 +3398,7 @@ void DisplayServerX11::process_events() {
 	xi.pressure = 0;
 	xi.tilt = Vector2();
 	xi.pressure_supported = false;
+	xi.pen_inverted = false;
 
 	LocalVector<XEvent> events;
 	{
@@ -3503,6 +3506,8 @@ void DisplayServerX11::process_events() {
 
 							values++;
 						}
+
+						xi.pen_inverted = xi.pen_inverted_devices.find(device_id)->value;
 
 						// https://bugs.freedesktop.org/show_bug.cgi?id=71609
 						// http://lists.libsdl.org/pipermail/commits-libsdl.org/2015-June/000282.html
@@ -3936,6 +3941,7 @@ void DisplayServerX11::process_events() {
 					mm->set_pressure(bool(mouse_get_button_state() & MouseButton::MASK_LEFT) ? 1.0f : 0.0f);
 				}
 				mm->set_tilt(xi.tilt);
+				mm->set_pen_inverted(xi.pen_inverted);
 
 				_get_key_modifier_state(event.xmotion.state, mm);
 				mm->set_button_mask((MouseButton)mouse_get_button_state());
