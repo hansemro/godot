@@ -82,9 +82,12 @@
 #define DVC_ROTATION 18
 
 #define CXO_MESSAGES 0x0004
+#define PK_STATUS 0x0002
 #define PK_NORMAL_PRESSURE 0x0400
 #define PK_TANGENT_PRESSURE 0x0800
 #define PK_ORIENTATION 0x1000
+
+#define TPS_INVERT 0x0010 /* 1.1 */
 
 typedef struct tagLOGCONTEXTW {
 	WCHAR lcName[40];
@@ -137,6 +140,7 @@ typedef struct tagORIENTATION {
 } ORIENTATION;
 
 typedef struct tagPACKET {
+	int pkStatus;
 	int pkNormalPressure;
 	int pkTangentPressure;
 	ORIENTATION pkOrientation;
