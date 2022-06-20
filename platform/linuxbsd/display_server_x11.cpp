@@ -3398,7 +3398,6 @@ void DisplayServerX11::process_events() {
 	xi.pressure = 0;
 	xi.tilt = Vector2();
 	xi.pressure_supported = false;
-	xi.pen_inverted = false;
 
 	LocalVector<XEvent> events;
 	{
