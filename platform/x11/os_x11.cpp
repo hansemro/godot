@@ -2583,7 +2583,10 @@ void OS_X11::process_xevents() {
 							values++;
 						}
 
-						xi.pen_inverted = xi.pen_inverted_devices.find(device_id)->value();
+						Map<int, bool>::Element *pen_inverted = xi.pen_inverted_devices.find(device_id);
+						if (pen_inverted) {
+							xi.pen_inverted = pen_inverted->value();
+						}
 
 						// https://bugs.freedesktop.org/show_bug.cgi?id=71609
 						// http://lists.libsdl.org/pipermail/commits-libsdl.org/2015-June/000282.html
