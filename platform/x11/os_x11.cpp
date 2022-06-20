@@ -2488,7 +2488,6 @@ void OS_X11::process_xevents() {
 	xi.pressure = 0;
 	xi.tilt = Vector2();
 	xi.pressure_supported = false;
-	xi.pen_inverted = false;
 
 	LocalVector<XEvent> events;
 	{
