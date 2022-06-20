@@ -2492,6 +2492,8 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 						windows[window_id].last_tilt = Vector2();
 					}
 
+					windows[window_id].last_pen_inverted = packet.pkStatus & TPS_INVERT;
+
 					POINT coords;
 					GetCursorPos(&coords);
 					ScreenToClient(windows[window_id].hWnd, &coords);
@@ -2510,7 +2512,7 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 
 					mm->set_pressure(windows[window_id].last_pressure);
 					mm->set_tilt(windows[window_id].last_tilt);
-					mm->set_pen_inverted(packet.pkStatus & TPS_INVERT);
+					mm->set_pen_inverted(windows[window_id].last_pen_inverted);
 
 					mm->set_button_mask(last_button_state);
 
@@ -2746,14 +2748,17 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 				} else {
 					windows[window_id].last_tilt = Vector2();
 					windows[window_id].last_pressure = (wParam & MK_LBUTTON) ? 1.0f : 0.0f;
+					windows[window_id].last_pen_inverted = false;
 				}
 			} else {
 				windows[window_id].last_tilt = Vector2();
 				windows[window_id].last_pressure = (wParam & MK_LBUTTON) ? 1.0f : 0.0f;
+				windows[window_id].last_pen_inverted = false;
 			}
 
 			mm->set_pressure(windows[window_id].last_pressure);
 			mm->set_tilt(windows[window_id].last_tilt);
+			mm->set_pen_inverted(windows[window_id].last_pen_inverted);
 
 			mm->set_button_mask(last_button_state);
 

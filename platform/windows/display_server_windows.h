@@ -375,6 +375,7 @@ class DisplayServerWindows : public DisplayServer {
 		int last_pressure_update;
 		float last_pressure;
 		Vector2 last_tilt;
+		bool last_pen_inverted = false;
 
 		HBITMAP hBitmap; //DIB section for layered window
 		uint8_t *dib_data = nullptr;
