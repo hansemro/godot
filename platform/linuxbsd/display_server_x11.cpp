@@ -3506,7 +3506,10 @@ void DisplayServerX11::process_events() {
 							values++;
 						}
 
-						xi.pen_inverted = xi.pen_inverted_devices.find(device_id)->value;
+						HashMap<int, bool>::Iterator pen_inverted = xi.pen_inverted_devices.find(device_id);
+						if (pen_inverted) {
+							xi.pen_inverted = pen_inverted->value;
+						}
 
 						// https://bugs.freedesktop.org/show_bug.cgi?id=71609
 						// http://lists.libsdl.org/pipermail/commits-libsdl.org/2015-June/000282.html
