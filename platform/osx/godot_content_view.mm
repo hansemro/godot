@@ -42,6 +42,7 @@
 	ime_input_event_in_progress = false;
 	mouse_down_control = false;
 	ignore_momentum_scroll = false;
+	last_pen_inverted = false;
 	[self updateTrackingAreas];
 
 	if (@available(macOS 10.13, *)) {
@@ -377,11 +378,17 @@
 	ds->update_mouse_pos(wd, mpos);
 	mm->set_position(wd.mouse_pos);
 	mm->set_pressure([event pressure]);
-	mm->set_pen_inverted([event pointingDeviceType] == NSPointingDeviceTypeEraser);
-	if ([event subtype] == NSEventSubtypeTabletPoint) {
+	bool pen_inverted = last_pen_inverted;
+	NSEventSubtype subtype = [event subtype];
+	if (subtype == NSEventSubtypeTabletPoint) {
 		const NSPoint p = [event tilt];
 		mm->set_tilt(Vector2(p.x, p.y));
+	} else if (subtype == NSEventSubtypeTabletProximity) {
+		// Check if using eraser-end of pen only on proxmity event
+		pen_inverted = [event pointingDeviceType] == NSPointingDeviceTypeEraser;
+		last_pen_inverted = pen_inverted;
 	}
+	mm->set_pen_inverted(pen_inverted);
 	mm->set_global_position(wd.mouse_pos);
 	mm->set_velocity(Input::get_singleton()->get_last_mouse_velocity());
 	const Vector2i relativeMotion = Vector2i(delta.x, delta.y) * ds->screen_get_max_scale();
