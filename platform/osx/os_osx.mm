@@ -809,11 +809,17 @@ static void _mouseDownEvent(NSEvent *event, int index, int mask, bool pressed) {
 	const Vector2 pos = get_mouse_pos(mpos);
 	mm->set_position(pos);
 	mm->set_pressure([event pressure]);
-	mm->set_pen_inverted([event pointingDeviceType] == NSPointingDeviceTypeEraser);
-	if ([event subtype] == NSEventSubtypeTabletPoint) {
+	bool pen_inverted = OS_OSX::singleton->last_pen_inverted;
+	NSEventSubtype subtype = [event subtype];
+	if (subtype == NSEventSubtypeTabletPoint) {
 		const NSPoint p = [event tilt];
 		mm->set_tilt(Vector2(p.x, p.y));
+	} else if (subtype == NSEventSubtypeTabletProximity) {
+		// Check if using eraser-end of pen only on proximity event
+		pen_inverted = [event pointingDeviceType] == NSPointingDeviceTypeEraser;
+		OS_OSX::singleton->last_pen_inverted = pen_inverted;
 	}
+	mm->set_pen_inverted(pen_inverted);
 	mm->set_global_position(pos);
 	mm->set_speed(OS_OSX::singleton->input->get_last_mouse_speed());
 	const Vector2 relativeMotion = Vector2(delta.x, delta.y) * OS_OSX::singleton->get_screen_max_scale();
