@@ -2645,7 +2645,7 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			if ((pen_info.penMask & PEN_MASK_TILT_X) && (pen_info.penMask & PEN_MASK_TILT_Y)) {
 				mm->set_tilt(Vector2((float)pen_info.tiltX / 90, (float)pen_info.tiltY / 90));
 			}
-			mm->set_pen_inverted(pen_info.penFlags & (PEN_FLAG_INVERTED|PEN_FLAG_ERASER));
+			mm->set_pen_inverted(pen_info.penFlags & (PEN_FLAG_INVERTED | PEN_FLAG_ERASER));
 
 			mm->set_ctrl_pressed(GetKeyState(VK_CONTROL) < 0);
 			mm->set_shift_pressed(GetKeyState(VK_SHIFT) < 0);
