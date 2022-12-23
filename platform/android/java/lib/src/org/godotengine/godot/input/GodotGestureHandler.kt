@@ -62,7 +62,7 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 	private var pointerCaptureInProgress = false
 
 	override fun onDown(event: MotionEvent): Boolean {
-		GodotInputHandler.handleMotionEvent(event.source, MotionEvent.ACTION_DOWN, event.buttonState, event.x, event.y, nextDownIsDoubleTap, event.pressure)
+		GodotInputHandler.handleMotionEvent(event.getToolType(0), MotionEvent.ACTION_DOWN, event.buttonState, event.x, event.y, nextDownIsDoubleTap, event.pressure)
 		nextDownIsDoubleTap = false
 		return true
 	}
@@ -83,7 +83,7 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 
 		// Cancel the previous down event
 		GodotInputHandler.handleMotionEvent(
-			event.source,
+			event.getToolType(0),
 			MotionEvent.ACTION_CANCEL,
 			event.buttonState,
 			event.x,
@@ -219,7 +219,7 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 			if (dragInProgress) {
 				// Cancel the drag
 				GodotInputHandler.handleMotionEvent(
-					originEvent.source,
+					originEvent.getToolType(0),
 					MotionEvent.ACTION_CANCEL,
 					originEvent.buttonState,
 					originEvent.x,

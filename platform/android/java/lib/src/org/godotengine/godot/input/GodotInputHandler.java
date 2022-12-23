@@ -419,15 +419,18 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 	}
 
 	static boolean isMouseEvent(MotionEvent event) {
-		return isMouseEvent(event.getSource());
+		return isMouseEvent(event.getToolType(0));
 	}
 
-	private static boolean isMouseEvent(int eventSource) {
-		boolean mouseSource = ((eventSource & InputDevice.SOURCE_MOUSE) == InputDevice.SOURCE_MOUSE) || ((eventSource & (InputDevice.SOURCE_TOUCHSCREEN | InputDevice.SOURCE_STYLUS)) == InputDevice.SOURCE_STYLUS);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			mouseSource = mouseSource || ((eventSource & InputDevice.SOURCE_MOUSE_RELATIVE) == InputDevice.SOURCE_MOUSE_RELATIVE);
+	private static boolean isMouseEvent(int toolType) {
+		switch (toolType) {
+			case MotionEvent.TOOL_TYPE_MOUSE:
+			case MotionEvent.TOOL_TYPE_STYLUS:
+			case MotionEvent.TOOL_TYPE_ERASER:
+			case MotionEvent.TOOL_TYPE_UNKNOWN:
+				return true;
 		}
-		return mouseSource;
+		return false;
 	}
 
 	static boolean handleMotionEvent(final MotionEvent event) {
@@ -438,16 +441,16 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 		return handleTouchEvent(event);
 	}
 
-	static boolean handleMotionEvent(int eventSource, int eventAction, int buttonsMask, float x, float y) {
-		return handleMotionEvent(eventSource, eventAction, buttonsMask, x, y, false, 0.0f);
+	static boolean handleMotionEvent(int eventToolType, int eventAction, int buttonsMask, float x, float y) {
+		return handleMotionEvent(eventToolType, eventAction, buttonsMask, x, y, false, 0.0f);
 	}
 
-	static boolean handleMotionEvent(int eventSource, int eventAction, int buttonsMask, float x, float y, boolean doubleTap, float pressure) {
-		return handleMotionEvent(eventSource, eventAction, buttonsMask, x, y, 0, 0, doubleTap, pressure);
+	static boolean handleMotionEvent(int eventToolType, int eventAction, int buttonsMask, float x, float y, boolean doubleTap, float pressure) {
+		return handleMotionEvent(eventToolType, eventAction, buttonsMask, x, y, 0, 0, doubleTap, pressure);
 	}
 
-	static boolean handleMotionEvent(int eventSource, int eventAction, int buttonsMask, float x, float y, float deltaX, float deltaY, boolean doubleTap, float pressure) {
-		if (isMouseEvent(eventSource)) {
+	static boolean handleMotionEvent(int eventToolType, int eventAction, int buttonsMask, float x, float y, float deltaX, float deltaY, boolean doubleTap, float pressure) {
+		if (isMouseEvent(eventToolType)) {
 			return handleMouseEvent(eventAction, buttonsMask, x, y, deltaX, deltaY, doubleTap, false, pressure);
 		}
 
