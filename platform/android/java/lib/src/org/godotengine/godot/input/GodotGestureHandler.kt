@@ -38,6 +38,8 @@ import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import org.godotengine.godot.GodotLib
 
+import android.util.Log
+
 /**
  * Handles regular and scale gesture input related events for the [GodotView] view.
  *
@@ -125,6 +127,8 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 	}
 
 	fun onMotionEvent(event: MotionEvent): Boolean {
+		val el = Thread.currentThread().getStackTrace()[4]
+		Log.i("GodotGestureHandler", "onMotionEvent pressure: %f caller: %s".format(event.pressure, el.getMethodName()))
 		return when (event.actionMasked) {
 			MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_BUTTON_RELEASE -> {
 				onActionUp(event)

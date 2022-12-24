@@ -55,6 +55,8 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 
+import android.util.Log;
+
 /**
  * A simple GLSurfaceView sub-class that demonstrate how to perform
  * OpenGL ES 2.0 rendering into a GL Surface. Note the following important
@@ -123,11 +125,13 @@ public class GodotView extends GLSurfaceView {
 
 	@Override
 	public boolean onGenericMotionEvent(MotionEvent event) {
+		Log.i("GodotView", String.format("onGenericMotionEvent pressure: %f\n", event.getPressure()));
 		return inputHandler.onGenericMotionEvent(event) || super.onGenericMotionEvent(event);
 	}
 
 	@Override
 	public boolean onCapturedPointerEvent(MotionEvent event) {
+		Log.i("GodotView", String.format("onCapturedPointerEvent pressure: %f\n", event.getPressure()));
 		return inputHandler.onGenericMotionEvent(event);
 	}
 
