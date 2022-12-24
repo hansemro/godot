@@ -73,7 +73,9 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 	}
 
 	override fun onLongPress(event: MotionEvent) {
-		contextClickRouter(event)
+		if (!GodotInputHandler.isMouseEvent(event)) {
+			contextClickRouter(event)
+		}
 	}
 
 	private fun contextClickRouter(event: MotionEvent) {
