@@ -433,6 +433,19 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 		return false;
 	}
 
+	static boolean isStylusEvent(MotionEvent event) {
+		return isStylusEvent(event.getToolType(0));
+	}
+
+	private static boolean isStylusEvent(int toolType) {
+		switch (toolType) {
+			case MotionEvent.TOOL_TYPE_STYLUS:
+			case MotionEvent.TOOL_TYPE_ERASER:
+				return true;
+		}
+		return false;
+	}
+
 	static boolean handleMotionEvent(final MotionEvent event) {
 		if (isMouseEvent(event)) {
 			return handleMouseEvent(event);
@@ -450,6 +463,21 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 	}
 
 	static boolean handleMotionEvent(int eventToolType, int eventAction, int buttonsMask, float x, float y, float deltaX, float deltaY, boolean doubleTap, float pressure) {
+		if (isStylusEvent(eventToolType)) {
+			switch (buttonsMask) {
+				case MotionEvent.BUTTON_STYLUS_PRIMARY:
+					buttonsMask = MotionEvent.BUTTON_SECONDARY;
+					break;
+				case MotionEvent.BUTTON_STYLUS_SECONDARY:
+					buttonsMask = MotionEvent.BUTTON_TERTIARY;
+					break;
+				case 0:
+				default:
+					buttonsMask = MotionEvent.BUTTON_PRIMARY;
+			}
+			Log.i(TAG, String.format("handleStylusEvent() action:%d, buttonsMask:%d, pressure:%f\n", eventAction, buttonsMask, pressure));
+			return handleMouseEvent(eventAction, buttonsMask, x, y, deltaX, deltaY, doubleTap, false, pressure);
+		}
 		if (isMouseEvent(eventToolType)) {
 			return handleMouseEvent(eventAction, buttonsMask, x, y, deltaX, deltaY, doubleTap, false, pressure);
 		}
