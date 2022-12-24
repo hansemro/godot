@@ -178,6 +178,11 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 
 	public boolean onTouchEvent(final MotionEvent event) {
 		Log.i(TAG, String.format("onTouchEvent\n"));
+
+		if (isMouseEvent(event)) {
+			return handleMouseEvent(event);
+		}
+
 		this.scaleGestureDetector.onTouchEvent(event);
 		if (this.gestureDetector.onTouchEvent(event)) {
 			// The gesture detector has handled the event.
@@ -198,10 +203,6 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 		}
 
 		Log.i(TAG, String.format("onTouchEvent() %s\n", event.toString()));
-
-		if (isMouseEvent(event)) {
-			return handleMouseEvent(event);
-		}
 
 		return handleTouchEvent(event);
 	}
@@ -456,6 +457,21 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 		return false;
 	}
 
+	private static int convertStylusButtonsMask(int buttonsMask) {
+		switch (buttonsMask) {
+			case MotionEvent.BUTTON_STYLUS_PRIMARY:
+				buttonsMask = MotionEvent.BUTTON_SECONDARY;
+				break;
+			case MotionEvent.BUTTON_STYLUS_SECONDARY:
+				buttonsMask = MotionEvent.BUTTON_TERTIARY;
+				break;
+			case 0:
+			default:
+				buttonsMask = MotionEvent.BUTTON_PRIMARY;
+		}
+		return buttonsMask;
+	}
+
 	static boolean handleMotionEvent(final MotionEvent event) {
 		if (isMouseEvent(event)) {
 			return handleMouseEvent(event);
@@ -474,17 +490,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 
 	static boolean handleMotionEvent(int eventToolType, int eventAction, int buttonsMask, float x, float y, float deltaX, float deltaY, boolean doubleTap, float pressure) {
 		if (isStylusEvent(eventToolType)) {
-			switch (buttonsMask) {
-				case MotionEvent.BUTTON_STYLUS_PRIMARY:
-					buttonsMask = MotionEvent.BUTTON_SECONDARY;
-					break;
-				case MotionEvent.BUTTON_STYLUS_SECONDARY:
-					buttonsMask = MotionEvent.BUTTON_TERTIARY;
-					break;
-				case 0:
-				default:
-					buttonsMask = MotionEvent.BUTTON_PRIMARY;
-			}
+			buttonsMask = convertStylusButtonsMask(buttonsMask);
 			Log.i(TAG, String.format("handleStylusEvent() action:%d, buttonsMask:%d, pressure:%f\n", eventAction, buttonsMask, pressure));
 			return handleMouseEvent(eventAction, buttonsMask, x, y, deltaX, deltaY, doubleTap, false, pressure);
 		}
@@ -499,7 +505,10 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 		final int eventAction = event.getActionMasked();
 		final float x = event.getX();
 		final float y = event.getY();
-		final int buttonsMask = event.getButtonState();
+		int buttonsMask = event.getButtonState();
+		if (isStylusEvent(event)) {
+			buttonsMask = convertStylusButtonsMask(buttonsMask);
+		}
 		final float pressure = event.getPressure(0);
 
 		final float verticalFactor = event.getAxisValue(MotionEvent.AXIS_VSCROLL);

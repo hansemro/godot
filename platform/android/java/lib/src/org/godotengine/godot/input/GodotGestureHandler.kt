@@ -179,7 +179,7 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 		return false
 	}
 
-	private fun onActionMove(event: MotionEvent): Boolean {
+	fun onActionMove(event: MotionEvent): Boolean {
 		if (contextClickInProgress) {
 			val sourceMouseRelative = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 				event.isFromSource(InputDevice.SOURCE_MOUSE_RELATIVE)
@@ -199,8 +199,7 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 			)
 			return true
 		}
-		GodotInputHandler.handleMotionEvent(event)
-		return true
+		return false
 	}
 
 	override fun onDoubleTapEvent(event: MotionEvent): Boolean {
