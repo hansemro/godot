@@ -193,6 +193,8 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 			return true;
 		}
 
+		Log.i(TAG, String.format("onTouchEvent() %s\n", event.toString()));
+
 		if (isMouseEvent(event)) {
 			return handleMouseEvent(event);
 		}
@@ -510,6 +512,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 	}
 
 	static boolean handleMouseEvent(int eventAction, int buttonsMask, float x, float y, float deltaX, float deltaY, boolean doubleClick, boolean sourceMouseRelative, float pressure) {
+		Log.i(TAG, String.format("handleMouseEvent() action:%d, buttonsMask:%d, pressure:%f\n", eventAction, buttonsMask, pressure));
 		// We don't handle ACTION_BUTTON_PRESS and ACTION_BUTTON_RELEASE events as they typically
 		// follow ACTION_DOWN and ACTION_UP events. As such, handling them would result in duplicate
 		// stream of events to the engine.
@@ -547,6 +550,7 @@ public class GodotInputHandler implements InputManager.InputDeviceListener {
 		}
 		final int action = event.getActionMasked();
 		final int actionPointerId = event.getPointerId(event.getActionIndex());
+		//Log.i(TAG, String.format("handleTouchEvent() buttonsMask:%d toolType:%d\n", event.getButtonState(), event.getToolType(0)));
 
 		return handleTouchEvent(action, actionPointerId, pointerCount, positions, false);
 	}

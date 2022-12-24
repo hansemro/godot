@@ -227,6 +227,8 @@ void AndroidInputHandler::_parse_mouse_event_info(int buttons_mask, bool p_press
 	int changed_button_mask = buttons_state ^ buttons_mask;
 
 	buttons_state = buttons_mask;
+	print_line("parse_mouse_event_info() buttons_mask: " + itos(buttons_mask));
+	print_line("parse_mouse_event_info() buttons_index: " + itos(_button_index_from_mask(changed_button_mask)));
 
 	ev->set_button_index(_button_index_from_mask(changed_button_mask));
 	ev->set_button_mask(buttons_mask);
@@ -390,6 +392,7 @@ int AndroidInputHandler::_android_button_mask_to_godot_button_mask(int android_b
 	if (android_button_mask & AMOTION_EVENT_BUTTON_FORWARD) {
 		godot_button_mask |= BUTTON_MASK_XBUTTON2;
 	}
+	print_line("android_button_mask: " + itos(android_button_mask) + " godot_button_mask: " + itos(godot_button_mask));
 
 	return godot_button_mask;
 }
