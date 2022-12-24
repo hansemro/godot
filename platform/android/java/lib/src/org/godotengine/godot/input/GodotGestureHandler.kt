@@ -195,7 +195,8 @@ internal class GodotGestureHandler : SimpleOnGestureListener(), OnScaleGestureLi
 			)
 			return true
 		}
-		return false
+		GodotInputHandler.handleMotionEvent(event)
+		return true
 	}
 
 	override fun onDoubleTapEvent(event: MotionEvent): Boolean {
